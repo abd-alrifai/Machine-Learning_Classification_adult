@@ -2,7 +2,7 @@
 
 This project offers a binary rating system to predict whether an individual's income exceeds
 
-50K سنوياً باستخدام بيانات تعداد البالغين (Adult Census Income Dataset).
+50K annually using Adult Census Income Dataset.
 
 The system relies on comparing several machine learning algorithms, then deploying the best model using FastAPI to provide instant predictions.
 
