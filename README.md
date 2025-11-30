@@ -1,115 +1,126 @@
-Adult Income Classification with Machine Learning
-A complete machine learning project that predicts whether an individual's income exceeds $50K/year based on census data. The project includes data preprocessing, model training with multiple algorithms, and a FastAPI deployment for real-time predictions.
- Table of Contents
+# Adult Income Classification with Machine Learning
 
-Overview
-Dataset
-Project Structure
-Installation
-Model Training
-API Deployment
-Model Performance
-Usage Examples
-Technologies Used
+This project offers a binary rating system to predict whether an individual's income exceeds
 
-Overview
-This project implements a binary classification system to predict income levels using the Adult Census Income dataset. Four different machine learning algorithms are trained and compared:
+50K سنوياً باستخدام بيانات تعداد البالغين (Adult Census Income Dataset).
 
-Logistic Regression
-Random Forest Classifier
-Support Vector Machine (SVM)
-XGBoost Classifier
+The system relies on comparing several machine learning algorithms, then deploying the best model using FastAPI to provide instant predictions.
 
-The best performing model (XGBoost) is then deployed via a FastAPI REST API for production use.
- Dataset
-The Adult Census Income dataset contains demographic information from the 1994 Census database.
-Features:
+## Table of Contents
 
-age: Age of the individual
-workclass: Type of employment
-fnlwgt: Final weight (census sampling weight)
-education: Highest level of education
-education_num: Numerical encoding of education
-marital_status: Marital status
-occupation: Type of occupation
-relationship: Relationship status
-race: Race
-sex: Gender
-capital_gain: Capital gains
-capital_loss: Capital losses
-hours_per_week: Hours worked per week
-native_country: Country of origin
+-   Overview\
+-   Dataset\
+-   Project Structure\
+-   Installation\
+-   Model Training\
+-   API Deployment\
+-   Model Performance\
+-   Usage Examples\
+-   Technologies Used\
+-   Notes\
+-   Contributing\
+-   License\
+-   Author\
+-   Acknowledgments
 
-Target Variable:
+## Overview
 
-income: Binary classification (<=50K or >50K)
+The project aims to build a classification model that predicts income level based on demographic characteristics. Four different models were trained:
 
-Project Structure
-├── Machine_Learning_Classification_adult.ipynb  # Main training notebook
-├── app.py                                       # FastAPI application
-├── models.py                                    # Pydantic models for API
-├── requirements.txt                             # Python dependencies
-├── adult_data.csv                              # Dataset
-├── preprocessor.pkl                            # Saved preprocessing pipeline
-├── scaler.pkl                                  # Saved feature scaler
-└── xgb_model.pkl                               # Saved XGBoost model
+1.  Logistic Regression\
+2.  Random Forest Classifier\
+3.  Support Vector Machine (SVM)\
+4.  XGBoost Classifier
 
+The XGBoost deployment model was chosen because it performed best.
 
-Installation
+## Dataset
+The project relies on the Adult Census Income Dataset, which contains demographic data from the 1994 census.
 
-Clone the repository:
+### Features
 
-bashgit clone https://github.com/abd-alrifai/Machine-Learning_Classification_adult.git
+-   age\
+-   workclass\
+-   fnlwgt\
+-   education\
+-   education_num\
+-   marital_status\
+-   occupation\
+-   relationship\
+-   race\
+-   sex\
+-   capital_gain\
+-   capital_loss\
+-   hours_per_week\
+-   native_country
+
+### Target Variable
+
+- Income: Takes one of the two values ​​(<=50K or >50K)
+
+## Project Structure
+
+    ├── Machine_Learning_Classification_adult.ipynb
+    ├── app.py
+    ├── models.py
+    ├── requirements.txt
+    ├── adult_data.csv
+    ├── preprocessor.pkl
+    ├── scaler.pkl
+    └── xgb_model.pkl
+
+## Installation
+
+### 1. Clone the repository
+
+``` bash
+git clone https://github.com/abd-alrifai/Machine-Learning_Classification_adult.git
 cd Machine-Learning_Classification_adult
+```
 
-Create a virtual environment (recommended):
+### 2. Create a virtual environment
 
-bashpython -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+``` bash
+python -m venv venv
+source venv/bin/activate       # Windows: venv\Scripts\activate
+```
 
-Install dependencies:
+### 3. Install dependencies
 
-bashpip install -r requirements.txt
-Required libraries:
-numpy
-pandas
-matplotlib
-seaborn
-scikit-learn
-xgboost
-joblib
-fastapi
-uvicorn
-pydantic
+``` bash
+pip install -r requirements.txt
+```
 
-🔧 Model Training
-Data Preprocessing Steps:
+## Model Training
 
-Data Cleaning:
+### Data Preprocessing
 
-Replace missing values (marked as "?") with NaN
-Drop rows with missing values
-Remove duplicate entries
+#### Data Cleaning
 
+- Replace missing values ​​"?" with NaN\
+- Delete rows containing missing values\
+- Remove duplicate rowsة
 
-Feature Engineering:
+#### Feature Engineering
 
-Separate categorical and numerical features
-One-Hot Encoding for categorical variables
-Standard scaling for numerical features
+Separating digital features from textual ones\
 
+-   One-Hot Encoding\
+-   StandardScaler
 
-Train-Test Split:
+### Train-Test Split
 
-90% training data
-10% testing data
-Random state: 42 for reproducibility
+- 90% training
+- 10% testing
+  
+- random_state = 42
 
+### Model Configuration
 
+#### XGBoost
 
-Model Configuration:
-XGBoost (Best Performer):
-pythonXGBClassifier(
+``` python
+XGBClassifier(
     n_estimators=500,
     max_depth=6,
     learning_rate=0.05,
@@ -119,30 +130,42 @@ pythonXGBClassifier(
     reg_lambda=1,
     random_state=42
 )
-Random Forest:
-pythonRandomForestClassifier(
+```
+
+#### Random Forest
+
+``` python
+RandomForestClassifier(
     n_estimators=500,
     max_depth=None,
     max_features='sqrt',
     bootstrap=True,
     random_state=42
 )
+```
 
-  API Deployment
-Starting the API Server:
-bashuvicorn app:app --reload --host 0.0.0.0 --port 8000
-API Endpoints:
-1. Health Check
-httpGET /health
-Response:
-json{
-  "status": "ok"
-}
-2. Income Prediction
-httpPOST /predict
-Content-Type: application/json
-Request body:
-json{
+## API Deployment
+
+### Start server
+
+``` bash
+uvicorn app:app --reload --host 0.0.0.0 --port 8000
+```
+
+### Endpoints
+
+#### GET /health
+
+``` json
+{"status": "ok"}
+```
+
+#### POST /predict
+
+Request:
+
+``` json
+{
   "age": 39,
   "workclass": "State-gov",
   "fnlwgt": 77516,
@@ -158,26 +181,42 @@ json{
   "hours_per_week": 40,
   "native_country": "United-States"
 }
+```
+
 Response:
-json{
+
+``` json
+{
   "prediction": "0",
   "probability": {
     "class_0": 0.85,
     "class_1": 0.15
   }
 }
- Model Performance
-Evaluation Metrics:
-ModelAccuracyPrecisionRecallF1-ScoreAUCLogistic Regression~0.85~0.75~0.60~0.67~0.90Random Forest~0.87~0.78~0.65~0.71~0.92SVM (RBF)~0.85~0.76~0.61~0.68~0.91XGBoost~0.87~0.79~0.66~0.72~0.93
-Note: Exact metrics may vary based on the specific data split and preprocessing
-ROC Curve Analysis:
-The project includes ROC curve visualization comparing all four models, with XGBoost achieving the highest Area Under Curve (AUC), indicating superior classification performance.
- Usage Examples
-Python API Request:
-pythonimport requests
+```
+
+## Model Performance
+
+  ---------------------------------------------------------------------------
+  Model                   Accuracy   Precision   Recall   F1-Score   AUC
+  ----------------------- ---------- ----------- -------- ---------- --------
+  Logistic Regression     \~0.85     \~0.75      \~0.60   \~0.67     \~0.90
+
+  Random Forest           \~0.87     \~0.78      \~0.65   \~0.71     \~0.92
+
+  SVM (RBF)               \~0.85     \~0.76      \~0.61   \~0.68     \~0.91
+
+  XGBoost                 \~0.87     \~0.79      \~0.66   \~0.72     \~0.93
+  ---------------------------------------------------------------------------
+
+## Usage Examples
+
+### Python
+
+``` python
+import requests
 
 url = "http://localhost:8000/predict"
-
 payload = {
     "age": 45,
     "workclass": "Private",
@@ -194,59 +233,50 @@ payload = {
     "hours_per_week": 50,
     "native_country": "United-States"
 }
+print(requests.post(url, json=payload).json())
+```
 
-response = requests.post(url, json=payload)
-print(response.json())
-cURL Request:
-bashcurl -X POST "http://localhost:8000/predict" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "age": 45,
-    "workclass": "Private",
-    "fnlwgt": 200000,
-    "education": "Masters",
-    "education_num": 14,
-    "marital_status": "Married-civ-spouse",
-    "occupation": "Exec-managerial",
-    "relationship": "Husband",
-    "race": "White",
-    "sex": "Male",
-    "capital_gain": 15024,
-    "capital_loss": 0,
-    "hours_per_week": 50,
-    "native_country": "United-States"
-  }'
-🛠️ Technologies Used
+### cURL
 
-Python 3.8+
-Machine Learning: scikit-learn, XGBoost
-Data Processing: pandas, numpy
-Visualization: matplotlib, seaborn
-API Framework: FastAPI
-Model Persistence: joblib
-API Server: uvicorn
+``` bash
+curl -X POST "http://localhost:8000/predict" -H "Content-Type: application/json" -d '{...}'
+```
 
- Notes
+## Technologies Used
 
-The preprocessing pipeline handles missing values and unknown categories
-All categorical features are one-hot encoded
-Numerical features are standardized using StandardScaler
-The XGBoost model is selected for deployment based on superior performance
-Class imbalance is handled through model hyperparameter tuning
+-   Python 3.8+\
+-   scikit-learn\
+-   XGBoost\
+-   pandas\
+-   numpy\
+-   matplotlib\
+-   seaborn\
+-   FastAPI\
+-   joblib\
+-   uvicorn
 
- Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
- License
-This project is available for educational and research purposes.
- Author
-Abdulrhman Essam Alrifai
+## Notes
+Dealing with missing data
 
+-   One-Hot Encoding\
+-   StandardScaler\
+  
+Choosing XGBoost for publishing
+
+## Contributing
+
+Contributions can be made via Pull Request.
+
+## License
+
+Available for educational and research purposes.
+
+## Author
+
+Abd Alrifai\
 GitHub: @abd-alrifai
+Email: bodi12381@gmail.com
 
-🙏 Acknowledgments
+## Acknowledgments
 
-Dataset source: UCI Machine Learning Repository
-Adult Census Income Dataset (1994 Census database)
-
-
-For questions or issues, please open an issue on the GitHub repository.
+Adult Census Income Dataset -- UCI Machine Learning Repository
